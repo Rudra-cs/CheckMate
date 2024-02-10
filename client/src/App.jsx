@@ -1,11 +1,14 @@
-import { Game } from "./components/Game";
+// import Home from "./Home";
+
+import HomePage from "./HomePage";
 
 const App = () => {
-  return (
-    <div>
-      <Game />
-    </div>
-  );
+    return (
+        <div>
+            {/* <Home /> */}
+            <HomePage />
+        </div>
+    );
 };
 
 export default App;

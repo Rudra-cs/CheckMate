@@ -1,19 +1,27 @@
 import express from "express";
 import { createServer } from "node:http";
-import { v4 as uuidv4 } from "uuid";
+import { Server } from "socket.io";
 
 const app = express();
 const server = createServer(app);
-
-server.on("connection", socket);
-
-// upgrade http server to websocket server
 const io = new Server(server, {
-  cors: "*", // allow connection from any origin
+  cors: {
+    origin: "http://localhost:5173",
+  },
 });
 
 app.get("/", (req, res) => {
-  res.send("<h1>Hello world</h1>");
+  res.send(`<h1>Hello from this side.</h1>`);
+});
+
+io.on("connection", (socket) => {
+  console.log("first");
+  console.log(socket.id, "connected");
+
+  socket.on("username", (username) => {
+    console.log("username:", username);
+    socket.data.username = username;
+  });
 });
 
 server.listen(3000, () => {
