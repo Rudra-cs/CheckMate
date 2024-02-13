@@ -1,8 +1,6 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
-import CustomDialog from "./DialogBox";
-// import CustomDialog from "./components/CustomDialog";
 
 export function Game({ players, room, orientation, cleanup }) {
     const chess = useMemo(() => new Chess(), []); // <- 1
@@ -13,6 +11,7 @@ export function Game({ players, room, orientation, cleanup }) {
         (move) => {
             try {
                 const result = chess.move(move); // update Chess instance
+
                 setFen(chess.fen()); // update fen state to trigger a re-render
 
                 console.log(
@@ -49,42 +48,40 @@ export function Game({ players, room, orientation, cleanup }) {
     );
 
     // onDrop function
-    function onDrop(sourceSquare, targetSquare) {
+    const onDrop = (sourceSquare, targetSquare, piece) => {
         const moveData = {
             from: sourceSquare,
             to: targetSquare,
             color: chess.turn(),
-            // promotion: "q",
+            promotion: piece[1].toLowerCase() ?? "q",
         };
 
         const move = makeAMove(moveData);
 
         // illegal move
         if (move === null) return false;
-
         return true;
-    }
+    };
+
+    useEffect(() => {});
 
     // Game component returned jsx
     return (
         <>
-            <div className="board mx-10 my-10">
+            <div className={`board  mx-10 my-10 max-w-[70vh] w-[70vw]`}>
                 {/* Load the chessboard */}
                 <Chessboard
                     position={fen}
                     onPieceDrop={onDrop}
-                    boardWidth={400}
+                    // boardWidth={400}
+                    customBoardStyle={{
+                        borderRadius: "4px",
+                        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+                    }}
+                    customDarkSquareStyle={{ backgroundColor: "#779952" }}
+                    customLightSquareStyle={{ backgroundColor: "#edeed1" }}
                 />
             </div>
-            <div></div>
-            <CustomDialog
-                open={Boolean(over)}
-                title={over}
-                contentText={over}
-                handleContinue={() => {
-                    setOver("");
-                }}
-            />
         </>
     );
 }

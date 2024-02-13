@@ -1,7 +1,7 @@
 // import { useState } from "react";
 // import CustomDialog from "./components/DialogBox";
 // import socket from "./connection/Socket";
-import { Game } from "./components/Game";
+import { Game } from "./Game";
 // import CustomTextField from "./components/CustomTextField";
 
 export default function Home() {
