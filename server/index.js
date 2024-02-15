@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
             // if room is empty set appropriate message
             error = true;
             message = "room is empty";
-        } else if (room.length >= 2) {
+        } else if (room.players.length >= 2) {
             // if room is full
             error = true;
             message = "room is full"; // set message to 'room is full'
@@ -91,6 +91,13 @@ io.on("connection", (socket) => {
 
         // emit an 'opponentJoined' event to the room to tell the other player that an opponent has joined
         socket.to(args.roomId).emit("opponentJoined", roomUpdate);
+    });
+
+    // Move event for multiplayer
+    socket.on("move", (data) => {
+        // emit to all sockets in the room except the emitting socket.
+        console.log(data);
+        socket.to(data.room).emit("move", data.move);
     });
 });
 
