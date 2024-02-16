@@ -8,7 +8,26 @@ export function Game({ players, room, orientation, cleanup }) {
     const chess = useMemo(() => new Chess(), []); // <- 1
     const [fen, setFen] = useState(chess.fen()); // <- 2
     const [over, setOver] = useState("");
+    const [whiteTime, setWhiteTime] = useState(180); // 3 minutes in seconds
+    const [blackTime, setBlackTime] = useState(180); // 3 minutes in seconds
+    const [intervalId, setIntervalId] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
+    const isWhiteTurn = chess.turn() === "w";
+    const bgClass =
+        isWhiteTurn === (orientation === "white") ? "bg-gray-500" : "bg-black";
+    const bgClassBlack =
+        isWhiteTurn === (orientation === "black") ? "bg-gray-500" : "bg-black";
+
+    function formatTime(time) {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes.toString().padStart(2, "0")}:${seconds
+            .toString()
+            .padStart(2, "0")}`;
+    }
+
+    // Move Function
     const makeAMove = useCallback(
         (move) => {
             try {
@@ -32,12 +51,15 @@ export function Game({ players, room, orientation, cleanup }) {
                                 chess.turn() === "w" ? "black" : "white"
                             } wins!`
                         );
+                        setShowModal(true);
                         // The winner is determined by checking which side made the last move
                     } else if (chess.isDraw()) {
                         // if it is a draw
                         setOver("Draw"); // set message to "Draw"
+                        setShowModal(true);
                     } else {
                         setOver("Game over");
+                        setShowModal(true);
                     }
                 }
 
@@ -48,7 +70,7 @@ export function Game({ players, room, orientation, cleanup }) {
         },
         [chess]
     );
-    console.log(orientation);
+
     // onDrop function
     const onDrop = (sourceSquare, targetSquare, piece) => {
         // orientation is either 'white' or 'black'. game.turn() returns 'w' or 'b'
@@ -64,7 +86,6 @@ export function Game({ players, room, orientation, cleanup }) {
         };
 
         const move = makeAMove(moveData);
-        console.log(move);
 
         // illegal move
         if (move === null) return false;
@@ -81,13 +102,69 @@ export function Game({ players, room, orientation, cleanup }) {
     useEffect(() => {
         socket.on("move", (move) => {
             makeAMove(move);
-            console.log("hello");
         });
     }, [makeAMove]);
 
+    useEffect(() => {
+        socket.on("playerDisconnected", (player) => {
+            setOver(`${player.username} has disconnected`); // set game over
+        });
+    }, []);
+
+    useEffect(() => {
+        socket.on("closeRoom", ({ roomId }) => {
+            if (roomId === room) {
+                cleanup();
+            }
+        });
+    }, [room, cleanup]);
+
+    // Timer Logic
+    useEffect(() => {
+        const id = setInterval(() => {
+            if (chess.turn() === "w") {
+                setWhiteTime((prevTime) => prevTime - 1);
+            } else {
+                setBlackTime((prevTime) => prevTime - 1);
+            }
+        }, 1000);
+
+        setIntervalId(id);
+
+        return () => clearInterval(id);
+    }, [chess]);
+
+    // Time Over Effect
+    useEffect(() => {
+        if (whiteTime === 0 || blackTime === 0) {
+            clearInterval(intervalId);
+            setOver("Time's up!");
+        }
+    }, [whiteTime, blackTime, intervalId]);
+
+    // Game over Modal
+    const handleCloseModal = () => {
+        setShowModal(false);
+        // Reset game or perform cleanup actions
+    };
+
     return (
-        <>
-            <div className={`board  mx-10 my-10 max-w-[70vh] w-[70vw]`}>
+        <div className="bg-zinc-800 h-screen w-screen overflow-auto flex ">
+            <div className={`board  mx-10 my-10 max-w-[70vh] w-[50vw]`}>
+                <div className="flex mb-2">
+                    <p className="text-white ">
+                        {orientation != "white"
+                            ? players[0].username
+                            : players[1].username}
+                    </p>
+                    <p
+                        className={`text-white text-end ml-auto mr-1 px-2 ${bgClassBlack}`}
+                    >
+                        {orientation != "white"
+                            ? formatTime(whiteTime)
+                            : formatTime(blackTime)}
+                    </p>
+                </div>
                 <Chessboard
                     boardOrientation={orientation}
                     position={fen}
@@ -101,7 +178,38 @@ export function Game({ players, room, orientation, cleanup }) {
                     customDarkSquareStyle={{ backgroundColor: "#779952" }}
                     customLightSquareStyle={{ backgroundColor: "#edeed1" }}
                 />
+                <div className="flex mt-2">
+                    <p className="text-white ">
+                        {orientation === "white"
+                            ? players[0].username
+                            : players[1].username}
+                    </p>
+                    <p
+                        className={`text-white text-end ml-auto mr-1 px-2  ${bgClass}`}
+                    >
+                        {orientation === "white"
+                            ? formatTime(whiteTime)
+                            : formatTime(blackTime)}
+                    </p>
+                </div>
             </div>
-        </>
+            {showModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <p>{over}</p>
+                        <button onClick={handleCloseModal}>Restart</button>
+                        <button onClick={cleanup}>Close</button>
+                    </div>
+                </div>
+            )}
+            <button
+                onClick={() => {
+                    socket.emit("closeRoom", { roomId: room });
+                    cleanup();
+                }}
+            >
+                Close
+            </button>
+        </div>
     );
 }

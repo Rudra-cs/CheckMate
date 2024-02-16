@@ -105,7 +105,7 @@ const Lobby = () => {
             </div>
         );
     }
-    console.log(players);
+    
 
     if (readyForGame) {
         return (
