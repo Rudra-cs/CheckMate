@@ -3,29 +3,21 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 import socket from "../connection/Socket";
+import { formatTime } from "../utils/time";
 
 export function Game({ players, room, orientation, cleanup }) {
-    const chess = useMemo(() => new Chess(), []); // <- 1
-    const [fen, setFen] = useState(chess.fen()); // <- 2
+    const chess = useMemo(() => new Chess(), []);
+    const [fen, setFen] = useState(chess.fen());
     const [over, setOver] = useState("");
-    const [whiteTime, setWhiteTime] = useState(180); // 3 minutes in seconds
-    const [blackTime, setBlackTime] = useState(180); // 3 minutes in seconds
+    const [whiteTime, setWhiteTime] = useState(180);
+    const [blackTime, setBlackTime] = useState(180);
     const [intervalId, setIntervalId] = useState(null);
-    const [showModal, setShowModal] = useState(false);
 
     const isWhiteTurn = chess.turn() === "w";
     const bgClass =
         isWhiteTurn === (orientation === "white") ? "bg-gray-500" : "bg-black";
     const bgClassBlack =
         isWhiteTurn === (orientation === "black") ? "bg-gray-500" : "bg-black";
-
-    function formatTime(time) {
-        const minutes = Math.floor(time / 60);
-        const seconds = time % 60;
-        return `${minutes.toString().padStart(2, "0")}:${seconds
-            .toString()
-            .padStart(2, "0")}`;
-    }
 
     // Move Function
     const makeAMove = useCallback(
@@ -51,15 +43,12 @@ export function Game({ players, room, orientation, cleanup }) {
                                 chess.turn() === "w" ? "black" : "white"
                             } wins!`
                         );
-                        setShowModal(true);
                         // The winner is determined by checking which side made the last move
                     } else if (chess.isDraw()) {
                         // if it is a draw
                         setOver("Draw"); // set message to "Draw"
-                        setShowModal(true);
                     } else {
                         setOver("Game over");
-                        setShowModal(true);
                     }
                 }
 
@@ -90,11 +79,7 @@ export function Game({ players, room, orientation, cleanup }) {
         // illegal move
         if (move === null) return false;
 
-        socket.emit("move", {
-            // <- 3 emit a move event.
-            move,
-            room,
-        }); // this event will be transmitted to the opponent via the server
+        socket.emit("move", { move, room });
 
         return true;
     };
@@ -123,9 +108,9 @@ export function Game({ players, room, orientation, cleanup }) {
     useEffect(() => {
         const id = setInterval(() => {
             if (chess.turn() === "w") {
-                setWhiteTime((prevTime) => prevTime - 1);
+                setWhiteTime((prevTime) => Math.max(prevTime - 1, 0));
             } else {
-                setBlackTime((prevTime) => prevTime - 1);
+                setBlackTime((prevTime) => Math.max(prevTime - 1, 0));
             }
         }, 1000);
 
@@ -142,11 +127,14 @@ export function Game({ players, room, orientation, cleanup }) {
         }
     }, [whiteTime, blackTime, intervalId]);
 
-    // Game over Modal
-    const handleCloseModal = () => {
-        setShowModal(false);
-        // Reset game or perform cleanup actions
-    };
+    // const handleCloseModal = () => {
+    //     // Reset game or perform cleanup actions
+    //     setFen(chess.fen()); // Reset the board position
+    //     setWhiteTime(18); // Reset white timer to 3 minutes (180 seconds)
+    //     setBlackTime(18); // Reset black timer to 3 minutes (180 seconds)
+    //     setOver(""); // Clear the game over message
+    //     setShowModal(false); // Close the modal
+    // };
 
     return (
         <div className="bg-zinc-800 h-screen w-screen overflow-auto flex ">
@@ -158,9 +146,9 @@ export function Game({ players, room, orientation, cleanup }) {
                             : players[1].username}
                     </p>
                     <p
-                        className={`text-white text-end ml-auto mr-1 px-2 ${bgClassBlack}`}
+                        className={`text-white text-end ml-auto mr-1 px-2 py-1 w-[60px] ${bgClassBlack}`}
                     >
-                        {orientation != "white"
+                        {orientation !== "white"
                             ? formatTime(whiteTime)
                             : formatTime(blackTime)}
                     </p>
@@ -170,6 +158,7 @@ export function Game({ players, room, orientation, cleanup }) {
                     position={fen}
                     onPieceDrop={onDrop}
                     cleanup={cleanup}
+                    arePremovesAllowed={true}
                     // boardWidth={400}
                     customBoardStyle={{
                         borderRadius: "4px",
@@ -192,24 +181,18 @@ export function Game({ players, room, orientation, cleanup }) {
                             : formatTime(blackTime)}
                     </p>
                 </div>
+                {orientation === "white" ? (
+                    <button
+                        // onClick={handleClick}
+                        className="bg-lime-100 select-none hover:bg-lime-200 tracking-wider font-sans text-lime-700 font-bold py-2 rounded-md mt-2 mb-5 w-[300px]"
+                    >
+                        Reset
+                    </button>
+                ) : (
+                    ""
+                )}
+                {over}
             </div>
-            {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <p>{over}</p>
-                        <button onClick={handleCloseModal}>Restart</button>
-                        <button onClick={cleanup}>Close</button>
-                    </div>
-                </div>
-            )}
-            <button
-                onClick={() => {
-                    socket.emit("closeRoom", { roomId: room });
-                    cleanup();
-                }}
-            >
-                Close
-            </button>
         </div>
     );
 }

@@ -3,6 +3,8 @@ import { useRecoilState } from "recoil";
 import { orientationState, usernameStore } from "../store/chess";
 import { Link, useNavigate } from "react-router-dom";
 import socket from "../connection/Socket";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -16,6 +18,7 @@ const HomePage = () => {
 
     return (
         <div className="flex flex-col items-center bg-zinc-800 h-screen w-screen overflow-auto">
+            <ToastContainer theme="dark" />
             <img
                 className="h-[300px] w-[300px] lg:h-[350px] lg:w-[350px] mt-[20vh] select-none"
                 src="/chessboard.png"
@@ -47,11 +50,22 @@ const HomePage = () => {
                         });
                     }
                 }}
-                className="bg-lime-700 select-none hover:bg-lime-800 tracking-wider font-sans text-lime-100 font-bold mb-10 py-2 rounded-md mt-2 w-[300px]"
+                className="bg-lime-700 select-none hover:bg-lime-800 tracking-wider font-sans text-lime-100 font-bold mb-2 py-2 rounded-md mt-2 w-[300px]"
             >
                 Create Private Room
             </button>
-
+            <button
+                onClick={() => {
+                    if (inputValue.trim() != "") {
+                        setUsername(inputValue.trim());
+                    } else {
+                        toast("Please input username!!");
+                    }
+                }}
+                className="bg-lime-700 select-none hover:bg-lime-800 tracking-wider font-sans text-lime-100 font-bold mb-10 py-2 rounded-md w-[300px]"
+            >
+                Play Vs Computer
+            </button>
             <div className="text-lime-100">
                 Made with <span className="text-red-500">❤</span> By{" "}
                 <Link

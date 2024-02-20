@@ -12,6 +12,8 @@ const io = new Server(server, {
 });
 
 const rooms = new Map();
+//  Define a map to store game state including game time
+const gameStates = new Map();
 
 io.on("connection", (socket) => {
     console.log(socket.id, "connected");
@@ -24,12 +26,8 @@ io.on("connection", (socket) => {
 
     // createRoom
     socket.on("createRoom", async (callback) => {
-        // callback here refers to the callback function from the client passed as data
         const roomId = uuidv4();
-
         await socket.join(roomId);
-
-        // set roomId as a key and roomData including players as value in the map
         rooms.set(roomId, {
             roomId,
             players: [{ id: socket.id, username: socket.data?.username }],
@@ -91,6 +89,7 @@ io.on("connection", (socket) => {
 
         // emit an 'opponentJoined' event to the room to tell the other player that an opponent has joined
         socket.to(args.roomId).emit("opponentJoined", roomUpdate);
+        startTimer(args.roomId);
     });
 
     // Move event for multiplayer
