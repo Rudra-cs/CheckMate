@@ -3,21 +3,51 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 import socket from "../connection/Socket";
-import { formatTime } from "../utils/time";
+// import { formatTime } from "../utils/time";
+import Chat from "./Chat";
 
 export function Game({ players, room, orientation, cleanup }) {
     const chess = useMemo(() => new Chess(), []);
     const [fen, setFen] = useState(chess.fen());
     const [over, setOver] = useState("");
-    const [whiteTime, setWhiteTime] = useState(180);
-    const [blackTime, setBlackTime] = useState(180);
-    const [intervalId, setIntervalId] = useState(null);
+    // const [whiteTime, setWhiteTime] = useState(180);
+    // const [blackTime, setBlackTime] = useState(180);
+    // const [intervalId, setIntervalId] = useState(null);
 
-    const isWhiteTurn = chess.turn() === "w";
-    const bgClass =
-        isWhiteTurn === (orientation === "white") ? "bg-gray-500" : "bg-black";
-    const bgClassBlack =
-        isWhiteTurn === (orientation === "black") ? "bg-gray-500" : "bg-black";
+    // const isPlayer1 = players[0].id === socket.id;
+    // let gameHasStarted = false;
+
+    // const isWhiteTurn = chess.turn() === "w";
+    // const bgClass =
+    //     isWhiteTurn === (orientation === "white") ? "bg-gray-500" : "bg-black";
+    // const bgClassBlack =
+    //     isWhiteTurn === (orientation === "black") ? "bg-gray-500" : "bg-black";
+
+    // const handleStartGame = () => {
+    //     if (!isPlayer1 || gameHasStarted) return;
+    //     gameHasStarted = true;
+    // };
+
+    // useEffect(() => {
+    //     // Start the game when gameHasStarted becomes true
+    //     if (gameHasStarted) {
+    //         const id = setInterval(() => {
+    //             // Timer logic...
+    //             if (chess.turn() === "w") {
+    //                 setWhiteTime((prevTime) => Math.max(prevTime - 1, 0));
+    //             } else {
+    //                 setBlackTime((prevTime) => Math.max(prevTime - 1, 0));
+    //             }
+    //         }, 1000);
+
+    //         setIntervalId(id);
+    //     }
+
+    //     // Clean up function
+    //     return () => {
+    //         clearInterval(intervalId);
+    //     };
+    // }, [chess, gameHasStarted, intervalId]);
 
     // Move Function
     const makeAMove = useCallback(
@@ -104,28 +134,28 @@ export function Game({ players, room, orientation, cleanup }) {
         });
     }, [room, cleanup]);
 
-    // Timer Logic
-    useEffect(() => {
-        const id = setInterval(() => {
-            if (chess.turn() === "w") {
-                setWhiteTime((prevTime) => Math.max(prevTime - 1, 0));
-            } else {
-                setBlackTime((prevTime) => Math.max(prevTime - 1, 0));
-            }
-        }, 1000);
+    // // Timer Logic
+    // useEffect(() => {
+    //     const id = setInterval(() => {
+    //         if (chess.turn() === "w") {
+    //             setWhiteTime((prevTime) => Math.max(prevTime - 1, 0));
+    //         } else {
+    //             setBlackTime((prevTime) => Math.max(prevTime - 1, 0));
+    //         }
+    //     }, 1000);
 
-        setIntervalId(id);
+    //     setIntervalId(id);
 
-        return () => clearInterval(id);
-    }, [chess]);
+    //     return () => clearInterval(id);
+    // }, [chess]);
 
-    // Time Over Effect
-    useEffect(() => {
-        if (whiteTime === 0 || blackTime === 0) {
-            clearInterval(intervalId);
-            setOver("Time's up!");
-        }
-    }, [whiteTime, blackTime, intervalId]);
+    // // Time Over Effect
+    // useEffect(() => {
+    //     if (whiteTime === 0 || blackTime === 0) {
+    //         clearInterval(intervalId);
+    //         setOver("Time's up!");
+    //     }
+    // }, [whiteTime, blackTime, intervalId]);
 
     // const handleCloseModal = () => {
     //     // Reset game or perform cleanup actions
@@ -137,9 +167,9 @@ export function Game({ players, room, orientation, cleanup }) {
     // };
 
     return (
-        <div className="bg-zinc-800 h-screen w-screen overflow-auto flex ">
+        <div className="bg-zinc-800 h-screen w-screen overflow-auto flex flex-wrap">
             <div className={`board  mx-10 my-10 max-w-[70vh] w-[50vw]`}>
-                <div className="flex mb-2">
+                {/* <div className="flex mb-2">
                     <p className="text-white ">
                         {orientation != "white"
                             ? players[0].username
@@ -152,13 +182,12 @@ export function Game({ players, room, orientation, cleanup }) {
                             ? formatTime(whiteTime)
                             : formatTime(blackTime)}
                     </p>
-                </div>
+                </div> */}
                 <Chessboard
                     boardOrientation={orientation}
                     position={fen}
                     onPieceDrop={onDrop}
                     cleanup={cleanup}
-                    arePremovesAllowed={true}
                     // boardWidth={400}
                     customBoardStyle={{
                         borderRadius: "4px",
@@ -167,7 +196,7 @@ export function Game({ players, room, orientation, cleanup }) {
                     customDarkSquareStyle={{ backgroundColor: "#779952" }}
                     customLightSquareStyle={{ backgroundColor: "#edeed1" }}
                 />
-                <div className="flex mt-2">
+                {/* <div className="flex mt-2">
                     <p className="text-white ">
                         {orientation === "white"
                             ? players[0].username
@@ -180,8 +209,16 @@ export function Game({ players, room, orientation, cleanup }) {
                             ? formatTime(whiteTime)
                             : formatTime(blackTime)}
                     </p>
-                </div>
-                {orientation === "white" ? (
+                </div> */}
+                {/* {isPlayer1 && !gameHasStarted && (
+                    <button
+                        onClick={handleStartGame}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-2 mb-5 w-[300px]"
+                    >
+                        Start Game
+                    </button>
+                )} */}
+                {/* {orientation === "white" ? (
                     <button
                         // onClick={handleClick}
                         className="bg-lime-100 select-none hover:bg-lime-200 tracking-wider font-sans text-lime-700 font-bold py-2 rounded-md mt-2 mb-5 w-[300px]"
@@ -190,9 +227,10 @@ export function Game({ players, room, orientation, cleanup }) {
                     </button>
                 ) : (
                     ""
-                )}
+                )} */}
                 {over}
             </div>
+            <Chat />
         </div>
     );
 }

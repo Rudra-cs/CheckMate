@@ -58,10 +58,6 @@ io.on("connection", (socket) => {
         }
 
         if (error) {
-            // if there's an error, check if the client passed a callback,
-            // call the callback (if it exists) with an error object and exit or
-            // just exit if the callback is not given
-
             if (callback) {
                 // if user passed a callback, call it with an error payload
                 callback({
@@ -89,7 +85,6 @@ io.on("connection", (socket) => {
 
         // emit an 'opponentJoined' event to the room to tell the other player that an opponent has joined
         socket.to(args.roomId).emit("opponentJoined", roomUpdate);
-        startTimer(args.roomId);
     });
 
     // Move event for multiplayer
