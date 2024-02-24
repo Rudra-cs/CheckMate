@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
+import socket from "../connection/Socket";
 
 const ChatRoom = () => {
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState("");
-    const [socket, setSocket] = useState(null);
 
     useEffect(() => {
         if (!socket) return;
