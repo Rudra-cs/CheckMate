@@ -58,6 +58,7 @@ const HomePage = () => {
                 onClick={() => {
                     if (inputValue.trim() != "") {
                         setUsername(inputValue.trim());
+                        navigate(`/computer`);
                     } else {
                         toast("Please input username!!");
                     }
@@ -67,7 +68,7 @@ const HomePage = () => {
                 Play Vs Computer
             </button>
             <div className="text-lime-100">
-                Made with <span className="text-red-500">❤</span> By{" "}
+                Made with <span className="text-red-500">🧠</span> By{" "}
                 <Link
                     className="text-lime-300 hover:underline"
                     to="https://www.linkedin.com/in/rudrabehera"
