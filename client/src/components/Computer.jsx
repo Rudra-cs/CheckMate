@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Chessboard } from "react-chessboard";
-import { Chess, Engine } from "chess.js";
+import { Chess } from "chess.js";
 const Computer = () => {
     const levels = {
         "Easy 🤓": 2,
