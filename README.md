@@ -129,8 +129,6 @@ export const Template = (args) => <ComputerVsComputer {...args} />;
     ```
 
     <br />
-    <br />
-    <br />
 
     ## More advanced examples with code you can see below
 
@@ -147,3 +145,5 @@ export const Template = (args) => <ComputerVsComputer {...args} />;
     <Canvas>
       <Story id="example-chessboard--analysis-board" />
     </Canvas>
+
+## Create your own turing machine for the chess engine using min max algo and dfs
