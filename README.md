@@ -146,4 +146,21 @@ export const Template = (args) => <ComputerVsComputer {...args} />;
       <Story id="example-chessboard--analysis-board" />
     </Canvas>
 
-## Create your own turing machine for the chess engine using min max algo and dfs
+## Create your own turing machine for the chess engine
+
+    - move generation
+    - board evaluation
+    - mini max
+    - alpha beta pruning
+
+### Step 1: Move generation and board visualization
+
+Step 2 : Position evaluation
+Step 3: Search tree using Minimax
+Step 4: Alpha-beta pruning
+
+pawn - 1
+rook - 5
+knight -3
+bishop - 3.5(3)
+queen - 10(9)
