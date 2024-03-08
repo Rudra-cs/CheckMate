@@ -164,3 +164,10 @@ rook - 5
 knight -3
 bishop - 3.5(3)
 queen - 10(9)
+
+check for the move if it captures or makes a checkmate
+
+Considerable move:-
+
+1. Captures
+2. Checkmate
