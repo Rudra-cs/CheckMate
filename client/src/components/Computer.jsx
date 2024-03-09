@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
+import { Engine } from "../utils/Engine";
 const Computer = () => {
     const levels = {
         "Easy 🤓": 2,
         "Medium 🧐": 8,
-        "Hard 😵": 18,
+        "Hard 😵": 14,
     };
     const engine = useMemo(() => new Engine(), []);
     const game = useMemo(() => new Chess(), []);
@@ -42,7 +43,11 @@ const Computer = () => {
         if (move === null) return false;
 
         // exit if the game is over
-        if (game.game_over() || game.in_draw()) return false;
+        if (game.isGameOver() || game.isDraw()) {
+            alert("Game Over!!");
+            console.log("Game Over");
+            return false;
+        }
 
         findBestMove();
 
@@ -50,16 +55,11 @@ const Computer = () => {
     }
 
     return (
-        <div>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginBottom: "1rem",
-                }}
-            >
+        <div className="flex flex-col">
+            <div className="flex justify-center mb-1">
                 {Object.entries(levels).map(([level, depth]) => (
                     <button
+                        className="bg-[#B58863]"
                         key={level}
                         // style={{
                         //     ...buttonStyle,
@@ -79,27 +79,38 @@ const Computer = () => {
                 id="PlayVsStockfish"
                 position={gamePosition}
                 onPieceDrop={onDrop}
+                boardWidth={400}
+                customBoardStyle={{
+                    flex: "flex",
+                    justifyContent: "center",
+                    borderRadius: "4px",
+                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+                }}
+                customDarkSquareStyle={{ backgroundColor: "#779952" }}
+                customLightSquareStyle={{ backgroundColor: "#edeed1" }}
             />
 
-            <button
-                // style={buttonStyle}
-                onClick={() => {
-                    game.reset();
-                    setGamePosition(game.fen());
-                }}
-            >
-                New game
-            </button>
-            <button
-                // style={buttonStyle}
-                onClick={() => {
-                    game.undo();
-                    game.undo();
-                    setGamePosition(game.fen());
-                }}
-            >
-                Undo
-            </button>
+            <div>
+                <button
+                    // style={buttonStyle}
+                    onClick={() => {
+                        game.reset();
+                        setGamePosition(game.fen());
+                    }}
+                >
+                    New game
+                </button>
+                <button
+                    // style={buttonStyle}
+                    onClick={() => {
+                        game.undo();
+                        game.undo();
+                        setGamePosition(game.fen());
+                    }}
+                >
+                    Undo
+                </button>
+            </div>
         </div>
     );
 };
