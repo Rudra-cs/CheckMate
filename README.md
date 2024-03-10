@@ -128,24 +128,6 @@ export const Template = (args) => <ComputerVsComputer {...args} />;
     };
     ```
 
-    <br />
-
-    ## More advanced examples with code you can see below
-
-    ### <center>Play vs computer</center>
-
-    <Canvas>
-      <Story id="example-chessboard--play-vs-computer" />
-    </Canvas>
-
-    <br /> <br />
-
-    ### <center>Analyse chess game using stockfish</center>
-
-    <Canvas>
-      <Story id="example-chessboard--analysis-board" />
-    </Canvas>
-
 ## Create your own turing machine for the chess engine
 
     - move generation
