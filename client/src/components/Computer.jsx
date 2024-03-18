@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 import { Engine } from "../utils/Engine";
+import Modal from "./Modal";
 const Computer = () => {
     const levels = {
         "Easy 🤓": 2,
@@ -14,7 +15,7 @@ const Computer = () => {
 
     const [gamePosition, setGamePosition] = useState(game.fen());
     const [stockfishLevel, setStockfishLevel] = useState(2);
-
+    const [modalMessage, setModalMessage] = useState("");
     function findBestMove() {
         engine.evaluatePosition(game.fen(), stockfishLevel);
 
@@ -28,8 +29,30 @@ const Computer = () => {
                 });
 
                 setGamePosition(game.fen());
+                setTimeout(() => {
+                    checkGameOver();
+                }, 1000);
             }
         });
+    }
+
+    function checkGameOver() {
+        if (game.isCheckmate()) {
+            if (game.turn() === "w") {
+                setModalMessage("Checkmate! Stockfish wins!");
+                console.log("Checkmate! Stockfish wins!");
+            } else {
+                setModalMessage("Checkmate! You wins!");
+                console.log("Checkmate! You wins!");
+            }
+        } else if (game.isDraw()) {
+            setModalMessage("Draw! The game is drawn.");
+            console.log("Draw! The game is drawn.");
+        }
+    }
+
+    function closeModal() {
+        setModalMessage("");
     }
 
     function onDrop(sourceSquare, targetSquare, piece) {
@@ -43,13 +66,7 @@ const Computer = () => {
         // illegal move
         if (move === null) return false;
 
-        // exit if the game is over
-        if (game.isGameOver() || game.isDraw()) {
-            alert("Game Over!!");
-            console.log("Game Over");
-            return false;
-        }
-
+        checkGameOver();
         findBestMove();
 
         return true;
@@ -114,6 +131,9 @@ const Computer = () => {
                     Undo
                 </button>
             </div>
+            {modalMessage && (
+                <Modal message={modalMessage} onClose={closeModal} />
+            )}
         </div>
     );
 };
