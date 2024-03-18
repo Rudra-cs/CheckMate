@@ -8,6 +8,7 @@ const Computer = () => {
         "Medium 🧐": 8,
         "Hard 😵": 14,
     };
+
     const engine = useMemo(() => new Engine(), []);
     const game = useMemo(() => new Chess(), []);
 
@@ -55,19 +56,19 @@ const Computer = () => {
     }
 
     return (
-        <div className="flex flex-col">
-            <div className="flex justify-center mb-1">
+        <div className="flex flex-col bg-zinc-800 min-h-screen">
+            <p className="text-white flex justify-center mt-[5vh] font-mono  tracking-widest text-lg">
+                StockFish Level
+            </p>
+            <div className="flex justify-center mb-5 tracking-wider text-base">
                 {Object.entries(levels).map(([level, depth]) => (
                     <button
-                        className="bg-[#B58863]"
+                        className={` ${
+                            depth === stockfishLevel
+                                ? "bg-[#f0d9b5]"
+                                : "bg-[#B58863]"
+                        } p-2`}
                         key={level}
-                        // style={{
-                        //     ...buttonStyle,
-                        //     backgroundColor:
-                        //         depth === stockfishLevel
-                        //             ? "#B58863"
-                        //             : "#f0d9b5",
-                        // }}
                         onClick={() => setStockfishLevel(depth)}
                     >
                         {level}
@@ -75,33 +76,35 @@ const Computer = () => {
                 ))}
             </div>
 
-            <Chessboard
-                id="PlayVsStockfish"
-                position={gamePosition}
-                onPieceDrop={onDrop}
-                boardWidth={400}
-                customBoardStyle={{
-                    flex: "flex",
-                    justifyContent: "center",
-                    borderRadius: "4px",
-                    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
-                }}
-                customDarkSquareStyle={{ backgroundColor: "#779952" }}
-                customLightSquareStyle={{ backgroundColor: "#edeed1" }}
-            />
+            <div className="flex justify-center items-center">
+                <Chessboard
+                    id="PlayVsStockfish"
+                    position={gamePosition}
+                    onPieceDrop={onDrop}
+                    boardWidth={400}
+                    customBoardStyle={{
+                        flex: "flex",
+                        borderRadius: "4px",
+                        margin: "auto",
+                        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+                    }}
+                    customDarkSquareStyle={{ backgroundColor: "#779952" }}
+                    customLightSquareStyle={{ backgroundColor: "#edeed1" }}
+                />
+            </div>
 
-            <div>
+            <div className="flex justify-center mt-5">
                 <button
-                    // style={buttonStyle}
+                    className="bg-lime-700 hover:bg-lime-900 text-lime-100 font-bold py-2 px-4 rounded"
                     onClick={() => {
                         game.reset();
                         setGamePosition(game.fen());
                     }}
                 >
-                    New game
+                    Reset
                 </button>
                 <button
-                    // style={buttonStyle}
+                    className="bg-lime-700 hover:bg-lime-900 text-lime-100 font-bold py-2 px-4 rounded ml-2"
                     onClick={() => {
                         game.undo();
                         game.undo();
