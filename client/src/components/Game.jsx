@@ -169,20 +169,20 @@ export function Game({ players, room, orientation, cleanup }) {
     return (
         <div className="bg-zinc-800 h-screen w-screen overflow-auto flex flex-wrap">
             <div className={`board  mx-10 my-10 max-w-[70vh] w-[50vw]`}>
-                {/* <div className="flex mb-2">
+                <div className="flex mb-2">
                     <p className="text-white ">
                         {orientation != "white"
                             ? players[0].username
                             : players[1].username}
                     </p>
-                    <p
+                    {/* <p
                         className={`text-white text-end ml-auto mr-1 px-2 py-1 w-[60px] ${bgClassBlack}`}
                     >
                         {orientation !== "white"
                             ? formatTime(whiteTime)
                             : formatTime(blackTime)}
-                    </p>
-                </div> */}
+                    </p> */}
+                </div>
                 <Chessboard
                     boardOrientation={orientation}
                     position={fen}
@@ -196,20 +196,20 @@ export function Game({ players, room, orientation, cleanup }) {
                     customDarkSquareStyle={{ backgroundColor: "#779952" }}
                     customLightSquareStyle={{ backgroundColor: "#edeed1" }}
                 />
-                {/* <div className="flex mt-2">
+                <div className="flex mt-2">
                     <p className="text-white ">
                         {orientation === "white"
                             ? players[0].username
                             : players[1].username}
                     </p>
-                    <p
+                    {/* <p
                         className={`text-white text-end ml-auto mr-1 px-2  ${bgClass}`}
                     >
                         {orientation === "white"
                             ? formatTime(whiteTime)
                             : formatTime(blackTime)}
-                    </p>
-                </div> */}
+                    </p> */}
+                </div>
                 {/* {isPlayer1 && !gameHasStarted && (
                     <button
                         onClick={handleStartGame}
