@@ -134,43 +134,11 @@ export function Game({ players, room, orientation, cleanup }) {
         });
     }, [room, cleanup]);
 
-    // // Timer Logic
-    // useEffect(() => {
-    //     const id = setInterval(() => {
-    //         if (chess.turn() === "w") {
-    //             setWhiteTime((prevTime) => Math.max(prevTime - 1, 0));
-    //         } else {
-    //             setBlackTime((prevTime) => Math.max(prevTime - 1, 0));
-    //         }
-    //     }, 1000);
-
-    //     setIntervalId(id);
-
-    //     return () => clearInterval(id);
-    // }, [chess]);
-
-    // // Time Over Effect
-    // useEffect(() => {
-    //     if (whiteTime === 0 || blackTime === 0) {
-    //         clearInterval(intervalId);
-    //         setOver("Time's up!");
-    //     }
-    // }, [whiteTime, blackTime, intervalId]);
-
-    // const handleCloseModal = () => {
-    //     // Reset game or perform cleanup actions
-    //     setFen(chess.fen()); // Reset the board position
-    //     setWhiteTime(18); // Reset white timer to 3 minutes (180 seconds)
-    //     setBlackTime(18); // Reset black timer to 3 minutes (180 seconds)
-    //     setOver(""); // Clear the game over message
-    //     setShowModal(false); // Close the modal
-    // };
-
     return (
         <div className="bg-zinc-800 h-screen w-screen overflow-auto flex flex-wrap">
             <div className={`board  mx-10 my-10 max-w-[70vh] w-[50vw]`}>
                 <div className="flex mb-2">
-                    <p className="text-white ">
+                    <p className={`text-white`}>
                         {orientation != "white"
                             ? players[0].username
                             : players[1].username}
