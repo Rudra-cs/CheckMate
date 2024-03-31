@@ -1,3 +1,61 @@
+# 🚀 CheckMate - Online Chess Game. Play with your friends ♟️
+
+Revolutionize your chess experience online! Our platform boasts WebRTC and Socket.io for seamless matches. Enjoy real-time play, instant updates, and sleek design. Elevate your game now! ♟️🌐
+
+## 📦 Technologies
+
+-   `Vite`
+-   `React.js`
+-   `Javascript`
+-   `Tailwind CSS`
+-   `Socket.io`
+-   `WebRTC`
+-   `Node.js`
+-   `React ChessBoard`
+-   `chess.js`
+
+## 🦄 Features
+
+Here's what you can do with Checkmate:
+
+-   **Real-time Matches:** Engage in thrilling chess matches with your friends worldwide, powered by WebRTC and Socket.io for seamless gameplay.
+
+-   **Dynamic Chessboard:** Immerse yourself in the game with dynamic chessboard components, offering flexibility and customization to suit your strategy.
+
+-   **Sleek Interface:** Enjoy a polished and responsive design across all devices, ensuring a seamless chess-playing experience.
+
+-   **User-Friendly Gameplay:** Our intuitive interface guides you through the game effortlessly, eliminating the hassle of complex controls.
+
+-   **Live Updates:** Stay on top of the action with real-time updates, witnessing every move unfold dynamically on the board.
+
+-   **Personalized Experience:** Customize your gameplay experience with tailored settings, reflecting your unique style and preferences.
+
+-   **Player VS Computer:** You can choose the difficulty level and play with the stockfish engine.
+
+## 💭 How can it be improved?
+
+-   Introduce multiple board themes to cater to different player preferences and enhance the visual experience.
+-   Expand export options beyond standard formats like PGN, including options for exporting to ChessBase or generating shareable game links.
+-   Implement interactive analysis tools, such as move annotations, variation trees, or engine analysis, to help players improve their skills and understand their games better.
+-   Offer a variety of customizable themes including different board designs, piece sets, and background options to personalize the playing experience.
+-   Provide advanced text options for in-game chat, including font customization, color selection, and text size adjustments, to enhance communication between players.
+
+## 🚦 Running the Project
+
+To run the project in your local environment, follow these steps:
+
+1. Clone the repository to your local machine.
+2. Run `npm install` or `yarn` in the project directory to install the required dependencies.
+3. Run `npm run start` or `yarn start` to get the project started.
+4. Open [http://localhost:5173](http://localhost:5173) (or the address shown in your console) in your web browser to view the app.
+5. Next go to server folder and do the same for the node server to run.
+
+## 🍿 Photos
+
+![Screenshot]()
+
+## 🧠 Making of Chess Engine
+
 import { Canvas, Meta, Story } from "@storybook/addon-docs";
 
 import { Chessboard } from "../src";
